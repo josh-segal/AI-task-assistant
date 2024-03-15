@@ -1,0 +1,51 @@
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Notion internal integration example" />
+
+    <title>AIssistant</title>
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/client.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Personal Notion Database AI Assistant</h1>
+    </header>
+
+    <main>
+      <h2>Goals</h2>
+      <p>
+        Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum
+        Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
+      </p>
+      <p>
+        Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
+      </p>
+      <table>
+        <tr>
+          <th>Input</th>
+          <th>Response</th>
+        </tr>
+        <tr>
+          <td>
+            <h3>Add a task the database</h3>
+            <form id="pageForm">
+              <label for="taskText">Input your task</label>
+              <input type="text" id="taskText" />
+              <input type="submit" />
+            </form>
+          </td>
+          <!-- The page form response will be appended here after submitting it -->
+          <td id="pageResponse"></td>
+        </tr>
+      </table>
+    </main>
+  </body>
+</html>
