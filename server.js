@@ -1,6 +1,7 @@
 
 require('dotenv').config()
 
+const inference = require("./user_input.js")
 const express = require("express")
 const app = express();
 
@@ -18,9 +19,10 @@ app.get("/", function (request, response) {
 
 // Create new page. The database ID is provided in the web form.
 app.post("/pages", async function (request, response) {
-  const {taskText, taskType } = request.body
+  const {taskText} = request.body
 
   try {
+    const taskType = await inference(taskText);
     const newPage = await notion.pages.create({
       parent: {
         type: "database_id",
@@ -38,17 +40,31 @@ app.post("/pages", async function (request, response) {
         },
         Label: {
           select: {
-            name: taskType
+            name: taskType[0][0].label
           }
         }
       },
     })
-    response.json({ message: "success!", data: newPage })
+    response.json({ message: "success!", data: newPage , task: taskType[0][0].label})
     // TODO: INPUT TASK SELECTION AND NER MESSAGES HERE
   } catch (error) {
     response.json({ message: "error", error })
   }
 })
+
+async function query(data) {
+	const response = await fetch(
+		"https://api-inference.huggingface.co/models/Joshua-Segal/assistant",
+		{
+			headers: { Authorization: process.env.HF_KEY },
+			method: "POST",
+			body: JSON.stringify(data),
+		}
+	);
+	const result = await response.json();
+	return result;
+}
+
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, function () {

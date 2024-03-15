@@ -11,6 +11,8 @@ async function query(data) {
 	return result;
 }
 
-query({"inputs": "Create more complex data samples."}).then((response) => {
-	console.log(JSON.stringify(response));
-});
+// query({"inputs": "Create more complex data samples."}).then((response) => {
+// 	console.log(JSON.stringify(response));
+// });
+
+module.exports = query;
