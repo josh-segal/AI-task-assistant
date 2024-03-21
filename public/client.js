@@ -4,6 +4,7 @@
  */
 
 // Forms
+// TODO: try inference here client side so it's easier to print task and NER inference
 const pageForm = document.getElementById("pageForm")
 
 // Table cells where API responses will be appended
