@@ -1,7 +1,7 @@
 
 require('dotenv').config()
 
-const inference = require("./user_input.js")
+const {query, dateTime} = require("./user_input.js")
 const express = require("express")
 const app = express();
 
@@ -22,13 +22,10 @@ app.post("/pages", async function (request, response) {
   const {taskText} = request.body
 
   try {
-    const taskType = await inference(taskText);
-    const newPage = await notion.pages.create({
-      parent: {
-        type: "database_id",
-        database_id: process.env.NOTION_DB_ID,
-      },
-      properties: {
+    const taskType = await query(taskText);
+    const date = await dateTime(taskText);
+    if (date === "") {
+      properties = {
         Task: {
           title: [
             {
@@ -43,7 +40,37 @@ app.post("/pages", async function (request, response) {
             name: taskType[0][0].label
           }
         }
+      }
+    }
+    else {
+      properties = {
+        Task: {
+          title: [
+            {
+              text: {
+                content: taskText,
+              },
+            },
+          ],
+        },
+        Label: {
+          select: {
+            name: taskType[0][0].label
+          }
+        },
+        Date: {
+          date: {
+            start: date
+          }
+        }
+      }
+    }
+    const newPage = await notion.pages.create({
+      parent: {
+        type: "database_id",
+        database_id: process.env.NOTION_DB_ID,
       },
+      properties: properties,
     })
     response.json({ message: "success!", data: newPage , task: taskType[0][0].label})
     // TODO: INPUT TASK SELECTION AND NER MESSAGES HERE
@@ -51,20 +78,6 @@ app.post("/pages", async function (request, response) {
     response.json({ message: "error", error })
   }
 })
-
-async function query(data) {
-	const response = await fetch(
-		"https://api-inference.huggingface.co/models/Joshua-Segal/assistant",
-		{
-			headers: { Authorization: process.env.HF_KEY },
-			method: "POST",
-			body: JSON.stringify(data),
-		}
-	);
-	const result = await response.json();
-	return result;
-}
-
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, function () {
