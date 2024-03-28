@@ -1,9 +1,11 @@
 
 require('dotenv').config()
+const openPromise = import('open');
 
 const {query, dateTime} = require("./user_input.js")
 const express = require("express")
 const app = express();
+const port = process.env.PORT || 3000;
 
 const { Client } = require("@notionhq/client");
 const notion = new Client({ auth: process.env.NOTION_KEY })
@@ -82,4 +84,11 @@ app.post("/pages", async function (request, response) {
 // listen for requests :)
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port)
+  openPromise.then(module => {
+    const open = module.default; // Access the default export of the module
+    // Automatically open localhost in the default browser
+    open(`http://localhost:${listener.address().port}`);
+  }).catch(error => {
+    console.error('Error opening localhost:', error);
+  });
 })
